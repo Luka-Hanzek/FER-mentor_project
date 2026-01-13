@@ -6,7 +6,7 @@ services:
     volumes:
       - type: bind
         source: ./docker-shared-data
-        target: /host-data
+        target: /docker-shared-data
 
       - type: volume
         source: sedona-opt
@@ -21,8 +21,8 @@ services:
         target: /root/.jupyter/lab/user-settings
 
     environment:
-      - DRIVER_MEM=512M
-      - EXECUTOR_MEM=1G
+      - DRIVER_MEM=4G
+      - EXECUTOR_MEM=500M
 
     ports:
       - 8888:8888
