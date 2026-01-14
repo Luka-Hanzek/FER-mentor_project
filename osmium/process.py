@@ -109,5 +109,5 @@ if __name__ == "__main__":
 
     exporter = Exporter(dest=os.path.join(cli_args.output_directory, "nodes"))
     exporter.export(node_handler.rows, overwrite=False)
-    # exporter = Exporter(dest=os.path.join(cli_args.output_directory, "ways"))
-    # exporter.export(way_handler.rows, overwrite=False)
+    exporter = Exporter(dest=os.path.join(cli_args.output_directory, "ways"))
+    exporter.export(way_handler.rows, overwrite=False)
