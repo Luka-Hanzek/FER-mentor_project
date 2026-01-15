@@ -83,3 +83,51 @@ class GeometryMaker(util.LoggingMixin):
             )
 
         return df_ways
+
+    def process_relations(self, df: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
+        from pyspark.sql.functions import col, explode, size, arrays_zip
+
+        df_ways = self.process_ways(df=df)
+
+        # Constructing relation geometries
+        # We only join relations with it's respective references
+
+        df_relations = df.filter(col("kind") == "relation")
+
+        # Filter out relations with 0 refs
+        no_refs_filter = col("refs").isNotNull() & (size(col("refs")) > 0)
+        if df_relations.count() > (
+            df_temp := df_relations.filter(no_refs_filter)
+        ).count():
+            self._logger.warn(
+                f"Dropping {df_relations.count() - df_temp.count()} \
+                    relations with NULL or empty refs."
+            )
+            df_relations = df_temp
+
+        df_relations = df_relations \
+            .select(
+                "id",
+                "tags",
+                explode(arrays_zip("refs", "ref_types")).alias("ref_with_type"),
+            ) \
+            .select(
+                "id",
+                "tags",
+                col("ref_with_type.refs").alias("ref"),
+                col("ref_with_type.ref_types").alias("ref_type")
+            ) \
+            .alias("relations").join(
+                other=df_ways.alias("ways"), 
+                on=(col("relations.ref") == col("ways.id"))
+            ) \
+            .select(
+                col("relations.id"),
+                col("relations.ref"),
+                col("relations.ref_type"),
+                col("relations.tags"),
+                col("ways.geometry"),
+            ) \
+            .orderBy("relations.id")
+
+        return df_relations
