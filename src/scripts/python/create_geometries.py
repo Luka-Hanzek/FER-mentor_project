@@ -38,6 +38,7 @@ def main():
     out_geom_dir = Path(args.out_geom_dir)
     out_geom_dir.mkdir(parents=True, exist_ok=True)
 
+    # TODO: Properly configure spark session
     spark = pyspark.sql.SparkSession.builder \
         .master("local[8]") \
         .appName("Learning Sedona") \

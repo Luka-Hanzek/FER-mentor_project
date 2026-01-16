@@ -8,6 +8,7 @@ PARQUET_PATH = "/docker-shared-data/geom/zagreb01/zagreb01_points.parquet"
 import pyspark.sql
 import sedona.spark
 
+# TODO: Properly configure spark session
 spark = pyspark.sql.SparkSession.builder \
     .master("local[4]") \
     .appName("Learning Sedona") \
