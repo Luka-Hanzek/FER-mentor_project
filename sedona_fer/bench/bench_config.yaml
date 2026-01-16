@@ -11,7 +11,7 @@ spark:
 dataset:
   path: "/dev-root/maps/map/map_ways.parquet"  # Path to your OSM dataset
   format: "parquet"                            # Format: csv, parquet, geojson
-  view_name: "osm_data"                        # SQL view name for queries
+  view_name: "osm_data"                        # SQL table name to use in queries
 
 # Benchmark Configuration
 benchmark:
