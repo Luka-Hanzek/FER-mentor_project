@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "/docker-shared-data/src/bench"
+    ],
+    "editor.rulers": [80]
+}
