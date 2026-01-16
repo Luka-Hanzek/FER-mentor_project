@@ -15,7 +15,7 @@ dataset:
 
 # Benchmark Configuration
 benchmark:
-  num_runs: 5                           # Number of times each query is executed
+  num_runs: 10                           # Number of times each query is executed
   warmup_runs: 2                        # Number of warmup runs (not measured)
   # TODO: Implement
   # timeout: 300                        # Optional: query timeout in seconds
