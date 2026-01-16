@@ -1,0 +1,10 @@
+if [[ ! -v SPARK_HOME ]]; then
+    echo "SPARK_HOME is not set. Please set SPARK_HOME to your Spark installation directory."
+    exit 1
+fi
+
+echo "Found SPARK_HOME at $SPARK_HOME"
+
+cp bench-logger.properties $SPARK_HOME/conf/
+
+echo "Copied bench-logger.properties to $SPARK_HOME/conf/"
