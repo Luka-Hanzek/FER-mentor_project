@@ -7,21 +7,24 @@
             "command": "python3",
             "args": [
                 "${workspaceFolder}/scripts/python/create_geometries.py",
-                "--src-file", "${input:srcFile}",
-                "--out-geom-dir", "${input:outGeomDir}"
+                "--src-file",
+                "${input:srcFile}",
+                "--out-geom-dir",
+                "${input:outGeomDir}"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "problemMatcher": [],
+            "problemMatcher": []
         },
         {
-            "label": "pwd",
+            "label": "Run benchmark",
             "type": "shell",
-            "command": "pwd",
+            "command": "python3 run.py",
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}/sedona_fer/bench"
             },
+            "problemMatcher": []
         }
     ],
     "inputs": [

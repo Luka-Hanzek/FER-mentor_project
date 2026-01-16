@@ -12,6 +12,16 @@
                 "--src-file", "${input:srcFile}",
                 "--out-geom-dir", "${input:outGeomDir}"
             ]
+        },
+        {
+            "name": "Debug start.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "run.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/sedona_fer/bench",
+            "args": [
+            ]
         }
     ],
     "inputs": [
