@@ -8,16 +8,8 @@ services:
 
     volumes:
       - type: bind
-        source: ./docker-shared-data
-        target: /docker-shared-data
-
-      - type: bind
-        source: ../../src
-        target: /docker-shared-data/src
-      
-      - type: bind
-        source: ../../maps
-        target: /docker-shared-data/maps
+        source: ../../
+        target: /dev-root
 
       - type: volume
         source: sedona-opt
