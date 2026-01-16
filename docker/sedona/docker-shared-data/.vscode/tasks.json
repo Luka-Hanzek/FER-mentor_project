@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run create_geometries",
+            "type": "shell",
+            "command": "python3",
+            "args": [
+                "${workspaceFolder}/src/scripts/python/create_geometries.py",
+                "--src-file", "${input:srcFile}",
+                "--out-geom-dir", "${input:outGeomDir}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+        }
+    ],
+    "inputs": [
+        {
+            "id": "srcFile",
+            "type": "promptString",
+            "description": "Path to input OSM / PBF file",
+            "default": "/path/to/input.osm.pbf"
+        },
+        {
+            "id": "outGeomDir",
+            "type": "promptString",
+            "description": "Output directory for GeoParquet files",
+            "default": "/path/to/output"
+        }
+    ]
+}
