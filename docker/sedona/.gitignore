@@ -1,0 +1,10 @@
+/*
+
+!.gitignore
+
+!Dockerfile
+!compose.yaml
+
+/docker-shared-data/*
+!docker-shared-data
+!docker-shared-data/.vscode
