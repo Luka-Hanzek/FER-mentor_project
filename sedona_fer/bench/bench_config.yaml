@@ -1,36 +1,67 @@
 # Sedona GIS Query Benchmark Configuration
+# 
+# This configuration file controls the benchmark execution.
+# Command-line arguments can override these settings.
 
-# Spark Configuration
+# ============================================================================
+# SPARK CONFIGURATION
+# ============================================================================
+# Controls Apache Spark distributed computing framework settings.
+# 
+# Overridable via CLI:
+#   --workers INT              Override number of workers
+#   --driver-memory STRING     Override driver memory
+#   --executor-memory STRING   Override executor memory
+#
 spark:
-  workers: 8                          # Number of Spark worker threads
-  driver_memory: "4g"                 # Driver memory allocation
-  executor_memory: "4g"               # Executor memory allocation
-  additional_config: {}               # Optional: additional Spark configurations
+  workers: 8                          # Number of local Spark worker threads
+  driver_memory: "4g"                 # Driver JVM memory allocation
+  executor_memory: "4g"               # Executor JVM memory allocation
+  additional_config:
+    spark.sql.adaptive.enabled: true  # Enable adaptive query execution
+    spark.sql.adaptive.coalescePartitions.enabled: true
 
-# Dataset Configuration
+# ============================================================================
+# DATASET CONFIGURATION
+# ============================================================================
+# Specifies the input data source for benchmarking.
+#
 dataset:
-  path: "/dev-root/maps/map/map_ways.parquet"  # Path to your OSM dataset
-  format: "parquet"                            # Format: csv, parquet, geojson
-  view_name: "osm_data"                        # SQL table name to use in queries
+  path: "/dev-root/maps/map/map_ways.parquet"  # Path to GeoParquet OSM dataset
+  format: "parquet"                             # Format: parquet, geojson, csv
+  view_name: "osm_data"                         # SQL table/view name for queries
 
-# Benchmark Configuration
+# ============================================================================
+# BENCHMARK CONFIGURATION
+# ============================================================================
+# Controls benchmark execution parameters.
+#
+# Overridable via CLI:
+#   --num-runs INT             Number of benchmark executions per query
+#   --warmup-runs INT          Number of warmup runs (not measured)
+#   --query-plans              Extract Spark query execution plans
+#   --memory-stats             Collect memory usage statistics
+#
 benchmark:
-  num_runs: 10                           # Number of times each query is executed
-  warmup_runs: 2                        # Number of warmup runs (not measured)
-  # TODO: Implement
-  # timeout: 300                        # Optional: query timeout in seconds
+  num_runs: 10                        # Number of timed executions per query
+  warmup_runs: 2                      # Cache-warming iterations (not timed)
 
-# Query Configuration
+# ============================================================================
+# QUERY CONFIGURATION
+# ============================================================================
+# Specifies which queries to execute.
+#
+# Query files are executed in alphabetical order.
+# A query filter can be applied via CLI: --queries query_01 query_03 query_05
+#
 queries:
-  directory: "/dev-root/sedona_fer/bench/queries"      # Directory containing .sql files
-  # TODO: Imelement
-  # disabled:                                          # Optional: list of specific queries to enable/disable
-  #   # - "query_01_spatial_join.sql"
-  #   # - "query_02_buffer.sql"
-  # enabled:
-  #   - "query_03_length_calculation.sql"
+  directory: "/dev-root/sedona_fer/bench/queries"  # Directory containing .sql files
 
-# Output Configuration
+# ============================================================================
+# OUTPUT CONFIGURATION
+# ============================================================================
+# Controls result storage and visualization.
+#
 output:
-  directory: "results"                # Directory for results and plots
-  generate_plots: true                # Generate performance visualizations
+  directory: "results"                # Directory for results JSON and plots
+  generate_plots: true                # Generate comprehensive visualizations
