@@ -1,0 +1,2 @@
+1. Proširivanje na podatek sa vozilima (sa kretanjem)
+    - .gpx
