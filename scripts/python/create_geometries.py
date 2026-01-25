@@ -17,7 +17,7 @@ def parse_args():
     parser.add_argument(
         "--src-file",
         required=True,
-        help="Path to input OSM PBF file"
+        help="Path to input OSM or PBF file"
     )
 
     parser.add_argument(
