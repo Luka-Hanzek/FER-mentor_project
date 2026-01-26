@@ -5,7 +5,7 @@ spark:
   workers: 8 # Number of Spark worker threads
   driver_memory: "4g" # Driver memory allocation
   executor_memory: "4g" # Executor memory allocation
-  additional_config: {} # Optional: additional Spark configurations
+  logs_directory: /dev-root/data/test-data/bench/spark-logs
 
 # Dataset Configuration
 # view_name: SQL table/view name for queries
@@ -37,5 +37,5 @@ queries:
 
 # Output Configuration
 output:
-  directory: "/dev-root/data/test-data/bench-results" # Directory for results and plots
+  directory: "/dev-root/data/test-data/bench/results" # Directory for results and plots
   generate_plots: true # Generate performance visualizations
