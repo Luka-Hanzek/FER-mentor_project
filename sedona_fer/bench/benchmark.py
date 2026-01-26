@@ -9,9 +9,6 @@ from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any
 
-from pyspark.sql import SparkSession
-from sedona.spark import SedonaContext
-
 import sedona_fer.data.import_export
 import sedona_fer.spark.session
 
@@ -122,12 +119,12 @@ class SedonaBenchmark:
         for dataset_cfg in self.config['datasets']:
             print(f"Loading dataset: {dataset_cfg['view_name']}")
             self._load_dataset(dataset_cfg)
-        
+
         # Discover queries
         print("Discovering queries...", end=" ")
         queries_directory = self.config['queries']['directory']
         query_files = self._discover_queries(queries_directory)
-        
+
         # Execute each query
         print("\n" + "=" * 60)
         print(" " * 10 + "Running Benchmarks")
@@ -244,13 +241,3 @@ class SedonaBenchmark:
         plt.savefig(detail_plot_file, dpi=300, bbox_inches='tight')
         print(f"Detailed plot saved to: {detail_plot_file}")
 
-
-def main():
-    benchmark = SedonaBenchmark("bench_config.yaml")
-    benchmark.run_benchmarks()
-    benchmark.save_results()
-    benchmark.generate_plots()
-
-
-if __name__ == "__main__":
-    main()
