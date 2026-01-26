@@ -14,13 +14,14 @@
             ]
         },
         {
-            "name": "Debug start.py",
+            "name": "Debug run_benchmark.py",
             "type": "debugpy",
             "request": "launch",
-            "program": "run.py",
+            "program": "${workspaceFolder}/scripts/python/run_benchmark.py",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/sedona_fer/bench",
+            "cwd": "${workspaceFolder}",
             "args": [
+                "--config", "${input:configFile}"
             ]
         }
     ],
@@ -28,14 +29,19 @@
         {
             "id": "srcFile",
             "type": "promptString",
-            "description": "Path to input OSM / PBF file",
-            "default": "/path/to/input.osm.pbf"
+            "description": "Path to input OSM / PBF file"
         },
         {
             "id": "outGeomDir",
             "type": "promptString",
             "description": "Output directory for GeoParquet files",
             "default": "/path/to/output"
+        },
+        {
+            "id": "configFile",
+            "type": "promptString",
+            "description": "Path to yaml configuration file",
+            "default": "${workspaceFolder}/bench_config.yaml"
         }
     ]
 }
