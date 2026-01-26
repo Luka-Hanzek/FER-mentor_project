@@ -17,7 +17,7 @@ def parse_args():
     parser.add_argument(
         "--src-file",
         required=True,
-        help="Path to input OSM PBF file"
+        help="Path to input OSM or PBF file"
     )
 
     parser.add_argument(
@@ -36,10 +36,9 @@ def main():
     out_geom_dir = Path(args.out_geom_dir)
     out_geom_dir.mkdir(parents=True, exist_ok=True)
 
-    # TODO: Properly configure spark session
     spark = pyspark.sql.SparkSession.builder \
-        .master("local[8]") \
-        .appName("Learning Sedona") \
+        .master("local[*]") \
+        .appName("Creating geometries") \
         .getOrCreate()
 
     sedona.spark.SedonaRegistrator.registerAll(spark)
