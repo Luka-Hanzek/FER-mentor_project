@@ -167,7 +167,7 @@ class SedonaBenchmark:
         """Save benchmark results to JSON file"""
 
         output_dir = Path(self.config['output']['directory'])
-        output_dir.mkdir(exist_ok=True)
+        output_dir.mkdir(exist_ok=True, parents=True)
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         results_file = output_dir / f"benchmark_results_{timestamp}.json"
