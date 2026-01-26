@@ -10,11 +10,11 @@ spark:
 # Dataset Configuration
 # view_name: SQL table/view name for queries
 datasets:
-  - path: "/dev-root/maps/map/map_ways.parquet"
+  - path: "/dev-root/data/test-data/maps/zagreb-small/parquet/zagreb01_ways.parquet"
     format: "parquet"
     view_name: "osm_data"
 
-  - path: "/dev-root/data/vehicles"
+  - path: "/dev-root/data/test-data/vehicles"
     format: "gpx"
     view_name: "vehicles"
 
@@ -27,7 +27,7 @@ benchmark:
 
 # Query Configuration
 queries:
-  directory: "/dev-root/sedona_fer/bench/queries" # Directory containing .sql files
+  directory: "/dev-root/data/test-data/queries" # Directory containing .sql files
   # TODO: Imelement
   # disabled:                                          # Optional: list of specific queries to enable/disable
   #   # - "query_01_spatial_join.sql"
@@ -37,5 +37,5 @@ queries:
 
 # Output Configuration
 output:
-  directory: "results" # Directory for results and plots
+  directory: "/dev-root/data/test-data/bench-results" # Directory for results and plots
   generate_plots: true # Generate performance visualizations
