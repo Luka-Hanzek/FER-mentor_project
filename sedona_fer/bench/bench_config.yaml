@@ -8,11 +8,7 @@ spark:
   additional_config: {} # Optional: additional Spark configurations
 
 # Dataset Configuration
-dataset:
-  path: "/dev-root/maps/map/map_ways.parquet" # Path to GeoParquet OSM dataset
-  format: "parquet" # Format: parquet, geojson, csv
-  view_name: "osm_data" # SQL table/view name for queries
-
+# view_name: SQL table/view name for queries
 datasets:
   - path: "/dev-root/maps/map/map_ways.parquet"
     format: "parquet"
