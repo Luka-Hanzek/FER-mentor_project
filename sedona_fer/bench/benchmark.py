@@ -13,7 +13,7 @@ import sedona_fer.data.import_export
 import sedona_fer.spark.session
 
 class SedonaBenchmark:
-    def __init__(self, config_path: str = "bench_config.yaml"):
+    def __init__(self, config_path: str):
         """Initialize benchmark framework with configuration"""
 
         self.config = self._load_config(config_path)
