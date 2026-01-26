@@ -1,10 +1,22 @@
 import sedona.sql.types
 import pyspark.sql
 from pyspark.sql import SparkSession
+from pyspark.sql import Row
+from pyspark.sql.types import (
+    StructType,
+    StructField,
+    DoubleType,
+    StringType,
+    TimestampType
+)
+from pyspark.sql.functions import expr
 
-import sedona_fer.util
 import subprocess
 import os
+
+import gpxpy
+
+import sedona_fer.util
 
 
 class LoaderError(Exception):
@@ -96,3 +108,45 @@ class Writer(sedona_fer.util.LoggingMixin):
 class ParquetWriter(Writer):
     def write_dataframe(self, df: pyspark.sql.DataFrame, output_path: str):
         df.write.format("geoparquet").save(output_path)
+
+
+class VehicleLoader(Loader):
+    def load_dataframe(self, data_path):
+        rows = []
+
+        for filename in os.listdir(data_path):
+            if filename.endswith(".gpx"):
+                filepath = os.path.join(data_path, filename)
+
+                with open(filepath, "r") as gpx_file:
+                    gpx = gpxpy.parse(gpx_file)
+
+                    for track in gpx.tracks:
+                        track_name = track.name or os.path.splitext(filename)[0]
+
+                        for segment in track.segments:
+                            for point in segment.points:
+                                rows.append(
+                                    Row(
+                                        lat=float(point.latitude),
+                                        lon=float(point.longitude),
+                                        track=track_name,
+                                        time=point.time
+                                    )
+                                )
+
+        schema = StructType([
+            StructField("lat", DoubleType(), False),
+            StructField("lon", DoubleType(), False),
+            StructField("track", StringType(), False),
+            StructField("time", TimestampType(), True)
+        ])
+
+        sdf = self._spark_session.createDataFrame(rows, schema=schema)
+
+        sdf = sdf.withColumn(
+            "geometry",
+            expr("ST_Point(lon, lat)")
+        )
+
+        return sdf

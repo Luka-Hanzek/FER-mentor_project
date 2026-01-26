@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" 
+     xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3" 
+     xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" 
+     creator="mapstogpx.com" version="1.1" 
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     xsi:schemaLocation="http://www.topografix.com/GPX/1/1 
+                         http://www.topografix.com/GPX/1/1/gpx.xsd 
+                         http://www.garmin.com/xmlschemas/GpxExtensions/v3 
+                         http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd 
+                         http://www.garmin.com/xmlschemas/TrackPointExtension/v1 
+                         http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd">
+  <metadata>
+    <link href="http://www.mapstogpx.com">
+      <text>Sverrir Sigmundarson</text>
+    </link>
+    <time>2025-06-03T09:38:08Z</time>
+  </metadata>
+  <wpt lat="45.8049472" lon="15.9548548">
+    <name>Hrvatska pošta</name>
+    <desc>Croatian Post, Nova cesta 39, 10122, Zagreb, Croatia</desc>
+  </wpt>
+  <wpt lat="45.80789" lon="15.954">
+    <name>Lidl</name>
+    <desc>Lidl, Nova cesta 7, 10000, Zagreb, Croatia</desc>
+  </wpt>
+  <trk>
+    <name>Hrvatska pošta to Lidl</name>
+    <number>1</number>
+    <trkseg>
+      <trkpt lat="45.8050056" lon="15.9548196">
+        <name>TP001</name>
+        <time>2025-06-03T09:38:08Z</time>
+      </trkpt>
+      <trkpt lat="45.80496" lon="15.95466">
+        <name>TP002</name>
+        <time>2025-06-03T09:38:13Z</time>
+      </trkpt>
+      <trkpt lat="45.8049575" lon="15.9546556">
+        <name>TP003</name>
+        <time>2025-06-03T09:38:18Z</time>
+      </trkpt>
+      <trkpt lat="45.80509" lon="15.95463">
+        <name>TP004</name>
+        <time>2025-06-03T09:38:23Z</time>
+      </trkpt>
+      <trkpt lat="45.80545" lon="15.95455">
+        <name>TP005</name>
+        <time>2025-06-03T09:38:28Z</time>
+      </trkpt>
+      <trkpt lat="45.80556" lon="15.95452">
+        <name>TP006</name>
+        <time>2025-06-03T09:38:33Z</time>
+      </trkpt>
+      <trkpt lat="45.80608" lon="15.9544">
+        <name>TP007</name>
+        <time>2025-06-03T09:38:38Z</time>
+      </trkpt>
+      <trkpt lat="45.80611" lon="15.95439">
+        <name>TP008</name>
+        <time>2025-06-03T09:38:43Z</time>
+      </trkpt>
+      <trkpt lat="45.80615" lon="15.95437">
+        <name>TP009</name>
+        <time>2025-06-03T09:38:48Z</time>
+      </trkpt>
+      <trkpt lat="45.80622" lon="15.95435">
+        <name>TP010</name>
+        <time>2025-06-03T09:38:53Z</time>
+      </trkpt>
+      <trkpt lat="45.80624" lon="15.95433">
+        <name>TP011</name>
+        <time>2025-06-03T09:38:58Z</time>
+      </trkpt>
+      <trkpt lat="45.8069" lon="15.95419">
+        <name>TP012</name>
+        <time>2025-06-03T09:39:03Z</time>
+      </trkpt>
+      <trkpt lat="45.80695" lon="15.95417">
+        <name>TP013</name>
+        <time>2025-06-03T09:39:08Z</time>
+      </trkpt>
+      <trkpt lat="45.8072" lon="15.9541">
+        <name>TP014</name>
+        <time>2025-06-03T09:39:13Z</time>
+      </trkpt>
+      <trkpt lat="45.80739" lon="15.95404">
+        <name>TP015</name>
+        <time>2025-06-03T09:39:18Z</time>
+      </trkpt>
+      <trkpt lat="45.80788" lon="15.9539">
+        <name>TP016</name>
+        <time>2025-06-03T09:39:23Z</time>
+      </trkpt>
+      <trkpt lat="45.8078753" lon="15.9538972">
+        <name>TP017</name>
+        <time>2025-06-03T09:39:28Z</time>
+      </trkpt>
+      <trkpt lat="45.8078753" lon="15.9538972">
+        <name>TP018</name>
+        <time>2025-06-03T09:39:33Z</time>
+      </trkpt>
+      <trkpt lat="45.8078753" lon="15.9538972">
+        <name>TP019</name>
+        <time>2025-06-03T09:39:38Z</time>
+      </trkpt>
+      <trkpt lat="45.808" lon="15.9534">
+        <name>TP019</name>
+        <time>2025-06-03T09:39:43Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
+

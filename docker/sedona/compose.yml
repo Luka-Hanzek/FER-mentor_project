@@ -15,16 +15,16 @@ services:
         source: sedona-opt
         target: /opt
 
-      - type: bind 
+      - type: bind
         source: ./docker-persist/.vscode-server
         target: /root/.vscode-server
-      
+
       - type: bind
         source: ./docker-persist/.jupyter/lab/user-settings
         target: /root/.jupyter/lab/user-settings
 
     environment:
-      - DRIVER_MEM=4G
+      - DRIVER_MEM=3G
       - EXECUTOR_MEM=500M
 
     ports:

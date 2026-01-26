@@ -2,27 +2,36 @@
 
 # Spark Configuration
 spark:
-  workers: 8                          # Number of Spark worker threads
-  driver_memory: "4g"                 # Driver memory allocation
-  executor_memory: "4g"               # Executor memory allocation
-  additional_config: {}               # Optional: additional Spark configurations
+  workers: 8 # Number of Spark worker threads
+  driver_memory: "4g" # Driver memory allocation
+  executor_memory: "4g" # Executor memory allocation
+  additional_config: {} # Optional: additional Spark configurations
 
 # Dataset Configuration
 dataset:
-  path: "/dev-root/maps/map/map_ways.parquet"  # Path to your OSM dataset
-  format: "parquet"                            # Format: csv, parquet, geojson
-  view_name: "osm_data"                        # SQL table name to use in queries
+  path: "/dev-root/maps/map/map_ways.parquet" # Path to GeoParquet OSM dataset
+  format: "parquet" # Format: parquet, geojson, csv
+  view_name: "osm_data" # SQL table/view name for queries
+
+datasets:
+  - path: "/dev-root/maps/map/map_ways.parquet"
+    format: "parquet"
+    view_name: "osm_data"
+
+  - path: "/dev-root/data/vehicles"
+    format: "gpx"
+    view_name: "vehicles"
 
 # Benchmark Configuration
 benchmark:
-  num_runs: 10                           # Number of times each query is executed
-  warmup_runs: 2                        # Number of warmup runs (not measured)
+  num_runs: 10 # Number of times each query is executed
+  warmup_runs: 2 # Number of warmup runs (not measured)
   # TODO: Implement
   # timeout: 300                        # Optional: query timeout in seconds
 
 # Query Configuration
 queries:
-  directory: "/dev-root/sedona_fer/bench/queries"      # Directory containing .sql files
+  directory: "/dev-root/sedona_fer/bench/queries" # Directory containing .sql files
   # TODO: Imelement
   # disabled:                                          # Optional: list of specific queries to enable/disable
   #   # - "query_01_spatial_join.sql"
@@ -32,5 +41,5 @@ queries:
 
 # Output Configuration
 output:
-  directory: "results"                # Directory for results and plots
-  generate_plots: true                # Generate performance visualizations
+  directory: "results" # Directory for results and plots
+  generate_plots: true # Generate performance visualizations
