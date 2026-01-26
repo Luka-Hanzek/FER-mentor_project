@@ -20,9 +20,14 @@
         {
             "label": "Run benchmark",
             "type": "shell",
-            "command": "python3 run.py",
+            "command": "python3",
+            "args": [
+                "${workspaceFolder}/scripts/python/run_benchmark.py",
+                "--config",
+                "${input:configFile}"
+            ],
             "options": {
-                "cwd": "${workspaceFolder}/sedona_fer/bench"
+                "cwd": "${workspaceFolder}/scripts/python"
             },
             "problemMatcher": []
         }
@@ -39,6 +44,12 @@
             "type": "promptString",
             "description": "Output directory for GeoParquet files",
             "default": "/path/to/output"
+        },
+        {
+            "id": "configFile",
+            "type": "promptString",
+            "description": "Path to yaml configuration file",
+            "default": "${workspaceFolder}/bench_config.yaml"
         }
     ]
 }
