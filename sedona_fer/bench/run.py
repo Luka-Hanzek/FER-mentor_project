@@ -13,7 +13,7 @@ from pyspark.sql import SparkSession
 from sedona.spark import SedonaContext
 
 import sedona_fer.data.import_export
-
+import sedona_fer.spark.session
 
 class SedonaBenchmark:
     def __init__(self, config_path: str = "bench_config.yaml"):
@@ -32,22 +32,9 @@ class SedonaBenchmark:
     def _init_spark(self, spark_config: dict):
         """Initialize Spark session with Sedona extensions"""
 
-        builder = SparkSession.builder \
-            .appName("Sedona-Benchmark") \
-            .master(f"local[{spark_config['workers']}]") \
-            .config("spark.driver.memory", spark_config['driver_memory']) \
-            .config("spark.executor.memory", spark_config['executor_memory']) \
-            .config(
-                "spark.driver.extraJavaOptions",
-                "-Dlog4j.configurationFile=bench-logger.properties"
-            )
-
-        # Add any additional Spark configurations
-        for key, value in spark_config.get('additional_config', {}).items():
-            builder = builder.config(key, value)
-
-        self.spark_session = builder.getOrCreate()
-        self.sedona = SedonaContext.create(self.spark_session)
+        self.spark_session = sedona_fer.spark.session.create_session(
+            spark_config=sedona_fer.spark.session.SparkConfig(**spark_config)
+        )
 
         print(f"Spark initialized with {spark_config['workers']} workers")
         print(f"Driver memory: {spark_config['driver_memory']}")
@@ -99,7 +86,7 @@ class SedonaBenchmark:
         # Warmup runs (not recorded)
         print(f"Warming up ({warmup_runs} runs)", end=": ")
         for _ in range(warmup_runs):
-            self.sedona.sql(query).collect()
+            self.spark_session.sql(query).collect()
             print("✓", end=" ", flush=True)
         print()
 
@@ -108,7 +95,7 @@ class SedonaBenchmark:
         for run in range(num_runs):
             start_time = time.time()
 
-            result_df = self.sedona.sql(query)
+            result_df = self.spark_session.sql(query)
             result_df.collect()
 
             end_time = time.time()
@@ -128,8 +115,7 @@ class SedonaBenchmark:
 
         # Initialize Spark
         print("Initializing environment.")
-        spark_config = self.config['spark']
-        self._init_spark(spark_config)
+        self._init_spark(self.config['spark'])
 
         # Load multiple dataset
         print(f"Loading dataset from: {self.config['dataset']['path']}.")
