@@ -183,9 +183,6 @@ class SedonaBenchmark:
     def generate_plots(self):
         """Generate performance visualization graphs"""
 
-    def generate_plots(self):
-        """Generate performance visualization graphs"""
-
         output_dir = Path(self.config['output']['directory'])
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
