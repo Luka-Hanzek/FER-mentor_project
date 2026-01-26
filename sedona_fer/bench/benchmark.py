@@ -114,8 +114,7 @@ class SedonaBenchmark:
         print("Initializing environment.")
         self._init_spark(self.config['spark'])
 
-        # Load multiple dataset
-        print(f"Loading dataset from: {self.config['dataset']['path']}.")
+        # Load multiple datasets
         for dataset_cfg in self.config['datasets']:
             print(f"Loading dataset: {dataset_cfg['view_name']}")
             self._load_dataset(dataset_cfg)
