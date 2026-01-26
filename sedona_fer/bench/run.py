@@ -14,6 +14,7 @@ from sedona.spark import SedonaContext
 
 import sedona_fer.data.import_export
 
+from scripts.python.load_vehicle_tracks import load_vehicle_tracks_from_folder;
 
 class SedonaBenchmark:
     def __init__(self, config_path: str = "bench_config.yaml"):
@@ -64,6 +65,11 @@ class SedonaBenchmark:
         if format_type == 'parquet':
             loader = sedona_fer.data.import_export.ParquetLoader(spark_session=self.spark_session)
             df = loader.load_dataframe(path)
+        elif format_type == 'gpx':
+            df = load_vehicle_tracks_from_folder(
+                folder_path=path,
+                sedona=self.sedona
+            )
         else:
             raise ValueError(f"Unsupported format: {format_type}")
 
@@ -128,9 +134,11 @@ class SedonaBenchmark:
         spark_config = self.config['spark']
         self._init_spark(spark_config)
 
-        # Load dataset
+        # Load multiple dataset
         print(f"Loading dataset from: {self.config['dataset']['path']}.")
-        self._load_dataset(self.config['dataset'])
+        for dataset_cfg in self.config['datasets']:
+            print(f"Loading dataset: {dataset_cfg['view_name']}")
+            self._load_dataset(dataset_cfg)
         
         # Discover queries
         print("Discovering queries...", end=" ")
