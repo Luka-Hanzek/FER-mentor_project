@@ -1,7 +1,7 @@
 from sedona_fer.data import import_export
 
 
-PARQUET_PATH = "/dev-root/maps/map_ways.parquet"
+PARQUET_PATH = "/dev-root/data/maps/map_ways.parquet"
 
 import pyspark.sql
 import sedona.spark

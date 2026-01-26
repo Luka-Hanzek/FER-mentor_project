@@ -18,7 +18,7 @@ datasets:
     format: "parquet"
     view_name: "osm_data"
 
-  - path: "/dev-root/sedona_fer/data/car_data"
+  - path: "/dev-root/data/vehicles"
     format: "gpx"
     view_name: "vehicles"
 
