@@ -14,7 +14,6 @@ from sedona.spark import SedonaContext
 
 import sedona_fer.data.import_export
 
-from scripts.python.load_vehicle_tracks import load_vehicle_tracks_from_folder;
 
 class SedonaBenchmark:
     def __init__(self, config_path: str = "bench_config.yaml"):
@@ -66,10 +65,8 @@ class SedonaBenchmark:
             loader = sedona_fer.data.import_export.ParquetLoader(spark_session=self.spark_session)
             df = loader.load_dataframe(path)
         elif format_type == 'gpx':
-            df = load_vehicle_tracks_from_folder(
-                folder_path=path,
-                sedona=self.sedona
-            )
+            loader = sedona_fer.data.import_export.VehicleLoader(spark_session=self.spark_session)
+            df = loader.load_dataframe(data_path=path)
         else:
             raise ValueError(f"Unsupported format: {format_type}")
 
