@@ -1,5 +1,4 @@
 import time
-import json
 import yaml
 
 import matplotlib.pyplot as plt
@@ -11,14 +10,22 @@ from typing import List, Dict, Any
 
 import sedona_fer.data.import_export
 import sedona_fer.spark.session
+import sedona_fer.bench.results
+import sedona_fer.bench.models as models
+
 
 class SedonaBenchmark:
     def __init__(self, config_path: str):
         """Initialize benchmark framework with configuration"""
 
         self.config = self._load_config(config_path)
-        self.results = []
-        self.spark_session = None
+        self._benchamrk_timestamp: str = None
+        self.results: models.BenchmarkResult = models.BenchmarkResult(
+            config=self.config,
+            timestamp=None,
+            query_results=[],
+        )
+        self.spark_session: sedona_fer.spark.session.SparkSession = None
 
     def _load_config(self, config_path: str) -> Dict[str, Any]:
         """Load benchmark configuration from YAML file"""
@@ -75,10 +82,10 @@ class SedonaBenchmark:
 
         return sql_files
 
-    def _execute_query(self, query: str, num_runs: int, warmup_runs: int) -> List[float]:
+    def _execute_query(self, query: str, num_runs: int, warmup_runs: int) -> List[models.QueryRun]:
         """Execute a query multiple times and record execution times"""
 
-        execution_times = []
+        results = []
 
         # Warmup runs (not recorded)
         print(f"Warming up ({warmup_runs} runs)", end=": ")
@@ -96,19 +103,26 @@ class SedonaBenchmark:
             result_df.collect()
 
             end_time = time.time()
-
             execution_time = end_time - start_time
-            execution_times.append(execution_time)
+
+            query_output = result_df.toPandas().to_json()
+
+            results.append(models.QueryRun(
+                run=run,
+                execution_time=execution_time,
+                query_output=query_output
+            ))
 
             print(f"✓ ", end="", flush=True)
         print("\nAll runs completed.")
 
-        return execution_times
+        return results
 
     def run_benchmarks(self):
         """Main benchmark execution method"""
 
         print("Starting benchmark")
+        self.results.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         # Initialize Spark
         print("Initializing environment.")
@@ -140,100 +154,52 @@ class SedonaBenchmark:
             # TODO: Add timeout handling
             num_runs = self.config['benchmark']['num_runs']
             warmup_runs = self.config['benchmark'].get('warmup_runs', 1)
-            execution_times = self._execute_query(query, num_runs, warmup_runs)
-
+            results = self._execute_query(query, num_runs, warmup_runs)
 
             # Store results
-            result = {
-                'query_name': query_file.stem,
-                'query_file': query_file.name,
-                'execution_times': execution_times,
-                'avg_time': sum(execution_times) / len(execution_times),
-                'min_time': min(execution_times),
-                'max_time': max(execution_times),
-                'timestamp': datetime.now().isoformat()
-            }
-            self.results.append(result)
 
-            print(f"Avg: {result['avg_time']:.3f}s | "
-                  f"Min: {result['min_time']:.3f}s | "
-                  f"Max: {result['max_time']:.3f}s")
+            execution_times = [result.execution_time for result in results]
+            # All query outputs should be the same
+            for query_output in [result.query_output for result in results]:
+                assert query_output == results[0].query_output
+            result = models.BenchmarkQueryResult(
+                query=models.Query(
+                    query_name=query_file.name
+                ),
+                timing=models.Timing(
+                    execution_times=execution_times,
+                    avg_time=sum(execution_times) / len(execution_times),
+                    min_time=min(execution_times),
+                    max_time=max(execution_times),
+                ),
+                query_output=models.QueryOutput(
+                    output=query_output
+                )
+            )
+            self.results.query_results.append(result)
+
+            print(f"Avg: {result.timing.avg_time:.3f}s | "
+                  f"Min: {result.timing.min_time:.3f}s | "
+                  f"Max: {result.timing.max_time:.3f}s")
 
         # Cleanup
         self.spark_session.stop()
         print("Benchmark completed successfully!")
 
-    def save_results(self):
-        """Save benchmark results to JSON file"""
-
-        output_dir = Path(self.config['output']['directory'])
-        output_dir.mkdir(exist_ok=True, parents=True)
-
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        results_file = output_dir / f"benchmark_results_{timestamp}.json"
-
-        with open(results_file, 'w') as f:
-            json.dump({
-                'config': self.config,
-                'results': self.results
-            }, f, indent=2)
-
-        print(f"Results saved to: {results_file}")
-
-    def generate_plots(self):
-        """Generate performance visualization graphs"""
-
-        output_dir = Path(self.config['output']['directory'])
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-        # Create DataFrame for easier plotting
-        data = []
-        for result in self.results:
-            for i, exec_time in enumerate(result['execution_times']):
-                data.append({
-                    'Query': result['query_name'],
-                    'Run': i + 1,
-                    'Time (s)': exec_time
-                })
-        df = pd.DataFrame(data)
-
-        # 1. Bar chart: Average execution time per query
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
-
-        avg_times = df.groupby('Query')['Time (s)'].mean().sort_values()
-        avg_times.plot(kind='barh', ax=ax1, color='steelblue')
-        ax1.set_xlabel('Average Execution Time (s)')
-        ax1.set_title('Average Query Performance')
-        ax1.grid(axis='x', alpha=0.3)
-
-        # 2. Box plot: Distribution of execution times
-        queries = df['Query'].unique()
-        data_for_box = [df[df['Query'] == q]['Time (s)'].values for q in queries]
-        ax2.boxplot(data_for_box, labels=queries, vert=False)
-        ax2.set_xlabel('Execution Time (s)')
-        ax2.set_title('Query Performance Distribution')
-        ax2.grid(axis='x', alpha=0.3)
-
-        plt.tight_layout()
-        plot_file = output_dir / f"benchmark_plot_{timestamp}.png"
-        plt.savefig(plot_file, dpi=300, bbox_inches='tight')
-        print(f"Visualization saved to: {plot_file}")
-
-        # 3. Detailed line plot for each query
-        fig, ax = plt.subplots(figsize=(12, 6))
-        for query in queries:
-            query_data = df[df['Query'] == query]
-            ax.plot(query_data['Run'], query_data['Time (s)'],
-                    marker='o', label=query, linewidth=2)
-
-        ax.set_xlabel('Run Number')
-        ax.set_ylabel('Execution Time (s)')
-        ax.set_title('Query Performance Across Runs')
-        ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-        ax.grid(alpha=0.3)
-
-        plt.tight_layout()
-        detail_plot_file = output_dir / f"benchmark_detail_{timestamp}.png"
-        plt.savefig(detail_plot_file, dpi=300, bbox_inches='tight')
-        print(f"Detailed plot saved to: {detail_plot_file}")
-
+    def export_results(self):
+        sedona_fer.bench.results.write_config(
+            self.results,
+            self.config["output"]["directory"],
+        )
+        sedona_fer.bench.results.write_timing_results(
+            self.results,
+            self.config["output"]["directory"],
+        )
+        sedona_fer.bench.results.generate_query_outputs(
+            self.results,
+            self.config["output"]["directory"],
+        )
+        sedona_fer.bench.results.generate_plots(
+            self.results,
+            self.config["output"]["directory"],
+        )

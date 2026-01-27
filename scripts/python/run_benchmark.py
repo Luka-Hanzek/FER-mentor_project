@@ -29,8 +29,8 @@ def main():
     benchmark = sedona_fer.bench.benchmark.SedonaBenchmark(cli_args.config)
 
     benchmark.run_benchmarks()
-    benchmark.save_results()
-    benchmark.generate_plots()
+    
+    benchmark.export_results()
 
 
 if __name__ == "__main__":
