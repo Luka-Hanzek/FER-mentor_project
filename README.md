@@ -58,6 +58,7 @@ You can now do anything you would do on your local machine.
 Tasks:
 - *Run benchmark*
 - *Run create_geometries*
+- *Print schemas*
 
 There are predefined datasets in `data/test-data` directory.
 

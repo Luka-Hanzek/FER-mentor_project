@@ -118,6 +118,25 @@ class SedonaBenchmark:
 
         return results
 
+    def display_schemas(self):
+        self._init_spark(self.config['spark'])
+
+        # Load multiple datasets
+        for dataset_cfg in self.config['datasets']:
+            print(f"Loading dataset: {dataset_cfg['view_name']}")
+            self._load_dataset(dataset_cfg)
+
+        tables = [table.name for table in self.spark_session.catalog.listTables()]
+        print(f"Found {len(tables)} tables:")
+
+        for table in tables:
+            print(f"  - {table}")
+
+        print("Displaying schemas:")
+        for table in tables:
+            print(f"- {table}")
+            self.spark_session.table(table).printSchema()
+
     def run_benchmarks(self):
         """Main benchmark execution method"""
 
