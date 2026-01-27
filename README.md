@@ -23,6 +23,12 @@ This is a minimal implementation of benchmarking framework in apache sedona.
 
     The benchmark outputs results into `.json` and creates some plots to visualize the results.
 
+    #### Example output from a query
+    ![](/assets/fig.png)
+
+    #### Example plots from a query
+    ![](/assets/plot1.png) ![](/assets/plot2.png)
+
 
 ## 3. How to run
 
