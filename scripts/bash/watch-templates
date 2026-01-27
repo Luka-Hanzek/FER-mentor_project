@@ -1,3 +1,5 @@
+#!/bin/bash
+
 TEMPLATES_DIR=$(dirname $1)/templates
 GEN_SCRIPT="$TEMPLATES_DIR/gen.py"
 
