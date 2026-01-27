@@ -136,6 +136,7 @@ class SedonaBenchmark:
         for table in tables:
             print(f"- {table}")
             self.spark_session.table(table).printSchema()
+            self.spark_session.table(table).show(1, truncate=True)
 
     def run_benchmarks(self):
         """Main benchmark execution method"""
