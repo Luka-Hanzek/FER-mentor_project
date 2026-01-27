@@ -30,6 +30,20 @@
                 "cwd": "${workspaceFolder}/scripts/python"
             },
             "problemMatcher": []
+        },
+        {
+            "label": "Print schemas",
+            "type": "shell",
+            "command": "python3",
+            "args": [
+                "${workspaceFolder}/scripts/python/print_schemas.py",
+                "--config",
+                "${input:configFile}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/scripts/python"
+            },
+            "problemMatcher": []
         }
     ],
     "inputs": [
