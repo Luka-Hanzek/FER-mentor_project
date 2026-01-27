@@ -1,0 +1,59 @@
+TEMPLATES_DIR=$(dirname $1)/templates
+GEN_SCRIPT="$TEMPLATES_DIR/gen.py"
+
+echo $TEMPLATES_DIR
+
+if [[ ! -d $TEMPLATES_DIR ]]; then
+    must_run_gen_script=1
+    echo "Templates directory not found: $TEMPLATES_DIR"
+    echo "Creating..."
+    mkdir -p $TEMPLATES_DIR
+    cat << 'EOF' > $TEMPLATES_DIR/empty.sql
+SELECT {number}
+EOF
+fi
+
+if [[ ! -f $GEN_SCRIPT ]]; then
+    cat << 'EOF' > $GEN_SCRIPT
+#### DO NOT MODIFY ################## DO NOT MODIFY #####
+import os################################################
+import sys################### DO NOT MODIFY #############
+os.makedirs("../instantiated-templates", exist_ok=True)##
+sql_template = sys.argv[1]###############################
+############################# DO NOT MODIFY #############
+with open(sql_template) as f:############################
+    sql = f.read() ################### DO NOT MODIFY ####
+os.chdir("../instantiated-templates")####################
+for file in os.listdir():################################
+    if file.endswith(".sql"):############################
+        os.remove(file)##################################
+#### DO NOT MODIFY ######################################
+
+# Modify the template here
+new_sql = sql.format(number=1)
+with open(os.path.join("select_1.sql"), "w") as f:
+    f.write(new_sql)
+
+EOF
+    last_sql="$TEMPLATES_DIR/empty.sql"
+fi
+
+if [[ -v must_run_gen_script ]]; then
+    (cd "$TEMPLATES_DIR" && /usr/bin/python3 $GEN_SCRIPT "$TEMPLATES_DIR/empty.sql")
+fi
+
+inotifywait \
+    -m \
+    -e close_write,create,move \
+    --format '%f' \
+    "$TEMPLATES_DIR" \
+| while read -r file; do
+    if [[ "$file" == *.sql ]]; then
+        echo "$file changed. Regenerating..."
+        (cd "$TEMPLATES_DIR" && /usr/bin/python3 "$GEN_SCRIPT" "$file")
+        last_sql="$TEMPLATES_DIR/$file"
+    elif [[ "$file" == gen.py && -f "$last_sql" ]]; then
+        echo "$file changed. Regenerating..."
+        (cd "$TEMPLATES_DIR" && /usr/bin/python3 "$GEN_SCRIPT" "$last_sql")
+    fi
+done
