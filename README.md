@@ -29,6 +29,18 @@ This is a minimal implementation of benchmarking framework in apache sedona.
     #### Example plots from a query
     ![](/assets/plot1.png) ![](/assets/plot2.png)
 
+3. Templating
+
+    `scripts/bash/watch-templates <templates-dir>` generates the following as a starting point:
+    - `<templates-dir>/`
+    - `<templates-dir>/templates/`
+    - `<templates-dir>/templates/gen.py`
+    - `<templates-dir>/templates/empty.sql`
+    - `<templates-dir>/instantiated_templates/`
+
+    It watches the `<templates-dir>/templates/` directory for file changes (either `gen.py` or `*.sql` files)
+    and generates the instantiations of a template to `<templates-dir>/instantiated_templates/` directory.<br>
+    The script `<templates-dir>/templates/gen.py` is used to modify the template.
 
 ## 3. How to run
 
