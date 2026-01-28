@@ -1,7 +1,7 @@
 import dataclasses
 
 from pyspark.sql import SparkSession
-from sedona.spark import SedonaContext
+from sedona.spark import SedonaContext, SedonaRegistrator
 
 
 @dataclasses.dataclass
@@ -25,4 +25,8 @@ def create_session(spark_config: SparkConfig) -> SparkSession:
         )
 
     spark_session = builder.getOrCreate()
+    SedonaRegistrator.registerAll(spark_session)
+    spark_session = SedonaContext.create(spark=spark_session)
+    
     return spark_session
+    
