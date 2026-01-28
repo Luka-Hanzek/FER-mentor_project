@@ -40,7 +40,8 @@ This is a minimal implementation of benchmarking framework in apache sedona.
 
     It watches the `<templates-dir>/templates/` directory for file changes (either `gen.py` or `*.sql` files)
     and generates the instantiations of a template to `<templates-dir>/instantiated_templates/` directory.<br>
-    The script `<templates-dir>/templates/gen.py` is used to modify the template.
+    The script `<templates-dir>/templates/gen.py` is used to modify the template.<br>
+    **NOTE**: to run, use VSCode task "*Watch/gen templates*".
 
 ## 3. How to run
 
@@ -77,6 +78,7 @@ Tasks:
 - *Run benchmark*
 - *Run create_geometries*
 - *Print schemas*
+- *Watch/gen templates*
 
 There are predefined datasets in `data/test-data` directory.
 
