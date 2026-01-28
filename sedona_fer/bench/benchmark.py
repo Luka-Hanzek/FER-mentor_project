@@ -9,6 +9,8 @@ from datetime import datetime
 from typing import List, Dict, Any
 
 import sedona_fer.data.import_export
+import sedona_fer.data.geom
+import sedona_fer.util
 import sedona_fer.spark.session
 import sedona_fer.bench.results
 import sedona_fer.bench.models as models
@@ -52,7 +54,8 @@ class SedonaBenchmark:
 
         # TODO: Since data is contained in multiple directories (points, ways[, relations]),
         #   implement logic to load all relevant files.
-        if format_type == 'parquet':
+        if format_type == 'osm':
+            self._create_geometries(dataset_config)
             loader = sedona_fer.data.import_export.ParquetLoader(spark_session=self.spark_session)
             df = loader.load_dataframe(path)
         elif format_type == 'gpx':
@@ -67,6 +70,37 @@ class SedonaBenchmark:
         print(f"Dataset registered as view: {view_name}")
 
         return df
+    
+    def _create_geometries(self, dataset_config: dict):
+        src_file = dataset_config['import_file_path']
+        out_geom_dir = Path(dataset_config['output_file_folder'])
+        out_geom_dir.mkdir(parents=True, exist_ok=True)
+
+        loader = sedona_fer.data.import_export.OsmLoader(spark_session=self.spark_session)
+
+        df = loader.load_dataframe(data_path=src_file)
+
+        geom_maker = sedona_fer.data.geom.GeometryMaker(spark_session=self.spark_session)
+
+        filename_without_extension = sedona_fer.util.get_filename_without_extension(src_file)
+
+        # Points
+        points = geom_maker.process_points(df)
+        points.write.format("geoparquet").save(
+            str(out_geom_dir / f"{filename_without_extension}_points.parquet")
+        )
+        # Free memory
+        points.unpersist()
+        del points
+
+        # Ways
+        ways = geom_maker.process_ways(df)
+        ways.write.format("geoparquet").save(
+            str(out_geom_dir / f"{filename_without_extension}_ways.parquet")
+        )
+        # Free memory
+        ways.unpersist()
+        del ways
 
     def _discover_queries(self, directory: str) -> List[Path]:
         """Find all .sql files in queries directory"""
