@@ -7,6 +7,7 @@ import pandas as pd
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Any
+from sedona.spark.sql.types import GeometryType
 
 import sedona_fer.data.import_export
 import sedona_fer.spark.session
@@ -105,7 +106,13 @@ class SedonaBenchmark:
             end_time = time.time()
             execution_time = end_time - start_time
 
-            query_output = result_df.toPandas().to_json()
+            # JSON has problems with exporting geometry columns.
+            # TODO: Handle this without removing data.
+            result_df_output = result_df
+            for field in result_df.schema.fields:
+                if isinstance(field.dataType, GeometryType):
+                    result_df_output = result_df_output.drop(field.name)
+            query_output = result_df_output.toPandas().to_json()
 
             results.append(models.QueryRun(
                 run=run,
