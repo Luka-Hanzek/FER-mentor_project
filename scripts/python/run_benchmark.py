@@ -29,7 +29,7 @@ def parse_args():
     parser.add_argument(
         "--out-geom-dir",
         required=True,
-        help="Directory where output GeoParquet files will be written"
+        help="Directory where output GeoParquet files will be written (WARNING: Existing files will be overwritten!)"
     )
 
     return parser.parse_args()

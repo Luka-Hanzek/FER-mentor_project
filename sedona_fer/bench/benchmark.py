@@ -89,7 +89,7 @@ class SedonaBenchmark:
 
         # Points
         points = geom_maker.process_points(df)
-        points.write.format("geoparquet").save(
+        points.write.mode("overwrite").format("geoparquet").save(
             str(out_geom_dir / f"{filename_without_extension}_points.parquet")
         )
         # Free memory
@@ -98,7 +98,7 @@ class SedonaBenchmark:
 
         # Ways
         ways = geom_maker.process_ways(df)
-        ways.write.format("geoparquet").save(
+        ways.write.mode("overwrite").format("geoparquet").save(
             str(out_geom_dir / f"{filename_without_extension}_ways.parquet")
         )
         # Free memory
