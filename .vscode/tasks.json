@@ -24,7 +24,11 @@
             "args": [
                 "${workspaceFolder}/scripts/python/run_benchmark.py",
                 "--config",
-                "${input:configFile}"
+                "${input:configFile}",
+                "--src-file",
+                "${input:srcFile}",
+                "--out-geom-dir",
+                "${input:outGeomDir}"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/scripts/python"
@@ -68,7 +72,7 @@
         {
             "id": "outGeomDir",
             "type": "promptString",
-            "description": "Output directory for GeoParquet files",
+            "description": "Output directory for GeoParquet files (WARNING: Existing files will be overwritten!)",
             "default": "/path/to/output"
         },
         {

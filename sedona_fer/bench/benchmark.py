@@ -10,16 +10,21 @@ from typing import List, Dict, Any
 from sedona.spark.sql.types import GeometryType
 
 import sedona_fer.data.import_export
+import sedona_fer.data.geom
+import sedona_fer.util
 import sedona_fer.spark.session
 import sedona_fer.bench.results
 import sedona_fer.bench.models as models
 
 
 class SedonaBenchmark:
-    def __init__(self, config_path: str):
+    def __init__(self, paths_config):
         """Initialize benchmark framework with configuration"""
 
-        self.config = self._load_config(config_path)
+        self.config = self._load_config(paths_config.config)
+        self.src_file = paths_config.src_file
+        self.out_geom_dir = paths_config.out_geom_dir
+
         self._benchamrk_timestamp: str = None
         self.results: models.BenchmarkResult = models.BenchmarkResult(
             config=self.config,
@@ -53,7 +58,8 @@ class SedonaBenchmark:
 
         # TODO: Since data is contained in multiple directories (points, ways[, relations]),
         #   implement logic to load all relevant files.
-        if format_type == 'parquet':
+        if format_type == 'osm':
+            self._create_geometries()
             loader = sedona_fer.data.import_export.ParquetLoader(spark_session=self.spark_session)
             df = loader.load_dataframe(path)
         elif format_type == 'gpx':
@@ -68,6 +74,37 @@ class SedonaBenchmark:
         print(f"Dataset registered as view: {view_name}")
 
         return df
+    
+    def _create_geometries(self):
+        src_file = self.src_file
+        out_geom_dir = Path(self.out_geom_dir)
+        out_geom_dir.mkdir(parents=True, exist_ok=True)
+
+        loader = sedona_fer.data.import_export.OsmLoader(spark_session=self.spark_session)
+
+        df = loader.load_dataframe(data_path=src_file)
+
+        geom_maker = sedona_fer.data.geom.GeometryMaker(spark_session=self.spark_session)
+
+        filename_without_extension = sedona_fer.util.get_filename_without_extension(src_file)
+
+        # Points
+        points = geom_maker.process_points(df)
+        points.write.mode("overwrite").format("geoparquet").save(
+            str(out_geom_dir / f"{filename_without_extension}_points.parquet")
+        )
+        # Free memory
+        points.unpersist()
+        del points
+
+        # Ways
+        ways = geom_maker.process_ways(df)
+        ways.write.mode("overwrite").format("geoparquet").save(
+            str(out_geom_dir / f"{filename_without_extension}_ways.parquet")
+        )
+        # Free memory
+        ways.unpersist()
+        del ways
 
     def _discover_queries(self, directory: str) -> List[Path]:
         """Find all .sql files in queries directory"""

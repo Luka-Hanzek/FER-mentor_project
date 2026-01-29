@@ -11,7 +11,7 @@ spark:
 # view_name: SQL table/view name for queries
 datasets:
   - path: "/dev-root/data/test-data/maps/zagreb-small/parquet/zagreb01_ways.parquet"
-    format: "parquet"
+    format: "osm"
     view_name: "osm_data"
 
   - path: "/dev-root/data/test-data/vehicles"
