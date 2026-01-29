@@ -24,7 +24,11 @@
             "args": [
                 "${workspaceFolder}/scripts/python/run_benchmark.py",
                 "--config",
-                "${input:configFile}"
+                "${input:configFile}",
+                "--src-file",
+                "${input:srcFile}",
+                "--out-geom-dir",
+                "${input:outGeomDir}"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/scripts/python"

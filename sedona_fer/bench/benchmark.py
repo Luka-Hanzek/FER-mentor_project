@@ -17,10 +17,13 @@ import sedona_fer.bench.models as models
 
 
 class SedonaBenchmark:
-    def __init__(self, config_path: str):
+    def __init__(self, paths_config):
         """Initialize benchmark framework with configuration"""
 
-        self.config = self._load_config(config_path)
+        self.config = self._load_config(paths_config.config)
+        self.src_file = paths_config.src_file
+        self.out_geom_dir = paths_config.out_geom_dir
+
         self._benchamrk_timestamp: str = None
         self.results: models.BenchmarkResult = models.BenchmarkResult(
             config=self.config,
@@ -55,7 +58,7 @@ class SedonaBenchmark:
         # TODO: Since data is contained in multiple directories (points, ways[, relations]),
         #   implement logic to load all relevant files.
         if format_type == 'osm':
-            self._create_geometries(dataset_config)
+            self._create_geometries()
             loader = sedona_fer.data.import_export.ParquetLoader(spark_session=self.spark_session)
             df = loader.load_dataframe(path)
         elif format_type == 'gpx':
@@ -71,9 +74,9 @@ class SedonaBenchmark:
 
         return df
     
-    def _create_geometries(self, dataset_config: dict):
-        src_file = dataset_config['import_file_path']
-        out_geom_dir = Path(dataset_config['output_file_folder'])
+    def _create_geometries(self):
+        src_file = self.src_file
+        out_geom_dir = Path(self.out_geom_dir)
         out_geom_dir.mkdir(parents=True, exist_ok=True)
 
         loader = sedona_fer.data.import_export.OsmLoader(spark_session=self.spark_session)

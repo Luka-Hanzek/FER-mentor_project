@@ -12,8 +12,6 @@ spark:
 datasets:
   - path: "/dev-root/data/test-data/maps/zagreb-small/parquet/zagreb01_ways.parquet"
     format: "osm"
-    import_file_path: "/dev-root/data/test-data/maps/zagreb-small/osm/zagreb01.osm"
-    output_file_folder: "/dev-root/data/test-data/maps/zagreb-small/parquet"
     view_name: "osm_data"
 
   - path: "/dev-root/data/test-data/vehicles"
